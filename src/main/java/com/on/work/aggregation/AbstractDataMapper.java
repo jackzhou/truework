@@ -13,19 +13,21 @@ import java.io.IOException;
 /**
  * Created by jzhou on 8/16/15.
  */
-public abstract class  AbstractDataMapper extends Mapper<LongWritable, Text, Vehicle, VehiclePrice> {
+public abstract class AbstractDataMapper extends Mapper<LongWritable, Text, Vehicle, VehiclePrice> {
     private Logger logger = Logger.getLogger(AbstractDataMapper.class);
+    private Vehicle vehicle = new Vehicle();
+    private VehiclePrice price = new VehiclePrice();
 
     protected void map(LongWritable key, Text value,
                        Context context) throws IOException, InterruptedException {
         try {
-            DataParser p = createParser(value.toString());
-            context.write(p.getVehicle(), p.getPrice());
+            createParser(vehicle, price).parse(value.toString());
+            context.write(this.vehicle, this.price);
         } catch (TrueDataException te) {
             context.getCounter(te.error).increment(1);
             logger.warn("parsing error", te.getCause());
         }
     }
 
-    abstract protected  DataParser createParser(String line);
+    abstract protected DataParser createParser(Vehicle vehicle, VehiclePrice price);
 }

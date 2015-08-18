@@ -23,7 +23,6 @@ public class VehiclePrice implements Writable {
 
 
     public VehiclePrice() {
-
     }
 
     public VehiclePrice(double sellingPrice, String vin, boolean fromInv) {
