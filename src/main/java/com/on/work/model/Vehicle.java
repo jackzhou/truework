@@ -1,8 +1,11 @@
 package com.on.work.model;
 
 
+import com.on.work.ComparatorUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.WritableComparator;
+import org.apache.hadoop.io.WritableUtils;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -18,7 +21,6 @@ public class Vehicle implements WritableComparable<Vehicle> {
     public static final String INVENTORY = "t";
     private Text make = new Text();
     private Text model = new Text();
-
     private Text modelYear = new Text();
     private Text trim = new Text();
     private Text vin = new Text();
@@ -168,5 +170,31 @@ public class Vehicle implements WritableComparable<Vehicle> {
                 ", vin=" + vin +
                 ", source=" + source +
                 '}';
+    }
+
+    public static class VehicleComparator extends WritableComparator {
+        public static final Text.Comparator TEXT_COMPARATOR = new Text.Comparator();
+
+        public VehicleComparator() {
+            super(Vehicle.class);
+        }
+
+        @Override
+        public int compare(byte[] b1, int s1, int l1,
+                           byte[] b2, int s2, int l2) {
+            try {
+                return ComparatorUtils.compareTextArray(b1, s1, b2, s2, 6);
+            }catch (IOException e) {
+                throw new IllegalArgumentException(e);
+            }
+
+        }
+
+        static {
+            define(Vehicle.class, new VehicleComparator());
+        }
+
+
+
     }
 }

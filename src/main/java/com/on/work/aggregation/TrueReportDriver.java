@@ -1,5 +1,6 @@
 package com.on.work.aggregation;
 
+import com.on.work.ComparatorUtils;
 import com.on.work.model.Vehicle;
 import com.on.work.model.VehiclePrice;
 import org.apache.hadoop.conf.Configured;
@@ -13,6 +14,8 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+
+import java.io.IOException;
 
 public class TrueReportDriver extends Configured implements Tool {
 
@@ -44,6 +47,17 @@ public class TrueReportDriver extends Configured implements Tool {
             r = r != 0 ? r : v1.getModelYear().compareTo(v2.getModelYear());
             r = r != 0 ? r : v1.getTrim().compareTo(v2.getTrim());
             return r;
+
+        }
+
+        @Override
+        public int compare(byte[] b1, int s1, int l1,
+                           byte[] b2, int s2, int l2) {
+            try {
+                return ComparatorUtils.compareTextArray(b1, s1, b2, s2, 4);
+            }catch (IOException e) {
+                throw new IllegalArgumentException(e);
+            }
 
         }
     }
