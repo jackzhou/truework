@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by jzhou on 8/16/15.
  */
-class VehicleDataReducer
+public class VehicleDataReducer
         extends Reducer<Vehicle, VehiclePrice, NullWritable, Text> {
 
     private String getAve(int count, double total) {
